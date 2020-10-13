@@ -11,8 +11,8 @@ pay them back before my debts increase out of control.
 
 ### **User Stories**
 * As a user, I want to be able to add a person to my Payment Group.
-* As a user, I want to be able to view how much a person in my group owes to me.
-* As a user, I want to be able to view how much I owe to someone in my group.
-* As a user, I want to be able to mark a person as paid when I pay the whole amount due to him/her.
+* As a user, I want to be able to view the total amount I owe to and will receive from everyone in the group.
+* As a user, I want to be able to deduct some amount someone pays to me or, I pay to someone.
+* As a user, I want to be able to remove a person from the group.
 
 
