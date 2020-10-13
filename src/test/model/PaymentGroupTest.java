@@ -75,6 +75,7 @@ public class PaymentGroupTest {
         group.addPeople(charlie);
         group.addPeople(bob);
 
+        assertEquals(3,group.sizeOfGroup());
         group.removePerson(bob);
         group.removePerson(alice);
 
@@ -84,10 +85,21 @@ public class PaymentGroupTest {
 
     @Test
     public void testSizeOfGroup(){
+        assertEquals(0,group.sizeOfGroup());
         group.addPeople(alice);
         group.addPeople(charlie);
 
         assertEquals(2, group.sizeOfGroup());
+    }
+
+    @Test
+    public void paymentGroupTest(){
+        group.addPeople(alice);
+        group.addPeople(charlie);
+
+        group.getPaymentGroup().contains(alice);
+
+        group.getPaymentGroup().contains(charlie);
     }
 
 }

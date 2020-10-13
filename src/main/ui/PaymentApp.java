@@ -5,6 +5,7 @@ import model.Person;
 
 import java.util.Scanner;
 
+//runs payment group application
 public class PaymentApp {
     private Person alice;
     private Person bob;
@@ -16,11 +17,13 @@ public class PaymentApp {
         runPayment();
     }
 
+    //modifies: this
+    //effect: processes user input
     private void runPayment() {
         boolean keepGoing = true;
         String userInput = null;
 
-        init(); //creates new people for group
+        init();
 
         while (keepGoing) {
             displayOptions();
@@ -36,6 +39,8 @@ public class PaymentApp {
         System.out.println("\nThank you!");
     }
 
+    //modifies: this
+    //effect: initializes the field
     private void init() {
         alice = new Person("alice", 20, 40);
         bob = new Person("bob", 100, 200);
@@ -47,17 +52,20 @@ public class PaymentApp {
         group.addPeople(charlie);
     }
 
+    //effect: shows the user options to choose from
     private void displayOptions() {
         System.out.println("\nSelect from the following options:");
         System.out.println("\ta -> Add a new person to your payment group");
         System.out.println("\tr -> Show total amount to be received from everyone");
         System.out.println("\tg -> Show total amount to be given to everyone");
-        System.out.println("\tp -> Pay someone");
-        System.out.println("\to -> Receive money from someone");
+        System.out.println("\tp -> Deduct amount you paid to someone");
+        System.out.println("\to -> Deduct amount you received from someone");
         System.out.println("\td -> Delete someone");
         System.out.println("\tq -> Quit");
     }
 
+    //modifies: this
+    //effect: processes user input
     private void processUserInput(String userInput) {
         if (userInput.equals("a")) {
             doAddition();
@@ -76,6 +84,8 @@ public class PaymentApp {
         }
     }
 
+    //modifies: this
+    //effect: prompts user for a valid name to be added to the group
     private void doAddition() {
         System.out.println("\nName of person you would like to add: ");
         String name = input.next();
@@ -95,6 +105,9 @@ public class PaymentApp {
         getAmounts(name);
     }
 
+    //modifies: this
+    //effect: prompts user for valid amounts to be included for the person
+    //the user wants to add, creates a new Person in the group and prints everyone
     private void getAmounts(String name) {
 
         System.out.println("\nHow much does " + name + " owe to you?");
@@ -115,19 +128,25 @@ public class PaymentApp {
 
         Person person = new Person(name, amountToGive, amountToTake);
         group.addPeople(person);
+        printEveryoneInGroup();
+
     }
 
+    //effect: shows total amount to be received by the user
     private void showReceivingAmount() {
         int amount = group.totalAmountToBeTaken();
         System.out.println("Total amount you will receive is $" + amount + ".");
 
     }
 
+    //effect: shows total amount to be given by the user
     private void showGivingAmount() {
         int amount = group.totalAmountToBeGiven();
         System.out.println("Total amount you will give is $" + amount + ".");
     }
 
+    //modifies: this
+    //effect: allows user to pay to someone in the group
     private void doPayment() {
         System.out.println("Choose someone to pay:");
         for (Person p : group.getPaymentGroup()) {
@@ -150,6 +169,8 @@ public class PaymentApp {
         }
     }
 
+    //modifies: this
+    //effect: allows user to receive payment from someone
     private void receivePayment() {
         System.out.println("Choose someone to receive money from:");
         for (Person p : group.getPaymentGroup()) {
@@ -173,6 +194,8 @@ public class PaymentApp {
 
     }
 
+    //modifies: this
+    //effect: allows user to remove someone from the group
     private void delete() {
         System.out.println("Choose someone to remove:");
         for (Person p : group.getPaymentGroup()) {
@@ -192,6 +215,11 @@ public class PaymentApp {
             group.getPaymentGroup().remove(personToRemove);
         }
 
+        printEveryoneInGroup();
+    }
+
+    //effect: prints people who are in the group
+    private void printEveryoneInGroup() {
         System.out.println("The people in your group are:");
         for (Person p : group.getPaymentGroup()) {
             System.out.println(p.getName());

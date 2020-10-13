@@ -32,6 +32,11 @@ public class PersonTest {
         assertEquals(30, bob.getAmountToGive());
     }
 
+    @Test
+    public void testGetName(){
+        assertEquals("Bob",bob.getName());
+    }
+
 
 
 }
