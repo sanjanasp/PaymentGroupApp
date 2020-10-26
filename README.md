@@ -17,4 +17,7 @@ pay them back before my debts increase out of control.
 * As a user, I want to be able to deduct some amount someone pays to me or, I pay to someone.
 * As a user, I want to be able to remove a person from the group.
 
+* As a user, I want to be able to save the existing list of people.
+* As a user, I want to be able to reload the list from the file.
+
 
