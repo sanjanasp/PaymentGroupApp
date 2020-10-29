@@ -1,6 +1,6 @@
 package model;
-import Persistence.JsonReader;
-import Persistence.JsonWriter;
+import persistance.JsonReader;
+import persistance.JsonWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

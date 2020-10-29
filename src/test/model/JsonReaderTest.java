@@ -1,6 +1,6 @@
 package model;
 
-import Persistence.JsonReader;
+import persistance.JsonReader;
 
 import org.junit.jupiter.api.Test;
 

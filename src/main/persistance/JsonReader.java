@@ -1,4 +1,4 @@
-package Persistence;
+package persistance;
 
 import model.PaymentGroup;
 import model.Person;

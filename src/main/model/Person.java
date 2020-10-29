@@ -1,6 +1,6 @@
 package model;
 
-import Persistence.Writeable;
+import persistance.Writeable;
 import org.json.JSONObject;
 
 // Person is someone who will be added to the payment group. Person has a name,

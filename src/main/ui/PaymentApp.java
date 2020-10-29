@@ -1,7 +1,7 @@
 package ui;
 
-import Persistence.JsonReader;
-import Persistence.JsonWriter;
+import persistance.JsonReader;
+import persistance.JsonWriter;
 import model.PaymentGroup;
 import model.Person;
 
