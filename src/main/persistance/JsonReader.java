@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
 // Modeled from sample application provided by CPSC 210
 // Represents a reader that reads payment group from JSON data stored in file
 public class JsonReader {
