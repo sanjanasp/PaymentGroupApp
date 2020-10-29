@@ -1,0 +1,12 @@
+{"People": [
+  {
+    "AmountToBeGiven": 20,
+    "AmountToBeReceived": 20,
+    "Name": "bob"
+  },
+  {
+    "AmountToBeGiven": 20,
+    "AmountToBeReceived": 30,
+    "Name": "charlie"
+  }
+]}

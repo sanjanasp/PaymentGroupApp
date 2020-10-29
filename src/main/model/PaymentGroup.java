@@ -1,17 +1,21 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import Persistence.Writeable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.LinkedList;
+import java.util.List;
 
 // PaymentGroup is a group of people who owe money and/or who will get money from the user.
 // All amounts to be given are in dollars (whole number).
-public class PaymentGroup {
+public class PaymentGroup implements Writeable {
 
-    private Set<Person> paymentGroup;
+    private List<Person> paymentGroup;
 
     //effect: constructs payment group
     public PaymentGroup() {
-        paymentGroup = new HashSet<>();
+        paymentGroup = new LinkedList<>();
     }
 
     //modifies: this
@@ -69,8 +73,26 @@ public class PaymentGroup {
     }
 
     //effect: returns the payment group
-    public Set<Person> getPaymentGroup() {
+    public List<Person> getPaymentGroup() {
         return paymentGroup;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("People", peopleToJson());
+        return json;
+    }
+
+
+    private JSONArray peopleToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Person p : paymentGroup) {
+            jsonArray.put(p.toJson());
+        }
+
+        return jsonArray;
     }
 
 }

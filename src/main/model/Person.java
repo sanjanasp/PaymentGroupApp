@@ -1,9 +1,12 @@
 package model;
 
+import Persistence.Writeable;
+import org.json.JSONObject;
+
 // Person is someone who will be added to the payment group. Person has a name,
 // amount they owe to the user and amount they will receive from the user.
 // Amount is dollars in whole number.
-public class Person {
+public class Person implements Writeable {
     private String name;             //name of the person
     private int amountToGive;        //how much amount(in dollars) this person has to give to me
     private int amountToTake;        //how much amount(in dollars) I have to take from this person
@@ -41,5 +44,14 @@ public class Person {
     //effect: returns the amount to be taken from this person
     public int getAmountToTake() {
         return amountToTake;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Name", name);
+        json.put("AmountToBeGiven", amountToGive);
+        json.put("AmountToBeReceived", amountToTake);
+        return json;
     }
 }

@@ -1,17 +1,24 @@
 package ui;
 
+import Persistence.JsonReader;
+import Persistence.JsonWriter;
 import model.PaymentGroup;
 import model.Person;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 //runs payment group application
 public class PaymentApp {
+    private static final String JSON_FILE = "./data/paymentgroup.json";
     private Person alice;
     private Person bob;
     private Person charlie;
     private Scanner input;
     private PaymentGroup group;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     public PaymentApp() {
         runPayment();
@@ -41,15 +48,18 @@ public class PaymentApp {
 
     //modifies: this
     //effect: initializes the field
-    private void init() {
-        alice = new Person("alice", 20, 40);
-        bob = new Person("bob", 100, 200);
-        charlie = new Person("charlie", 0, 50);
+    private void init()  {
+//        alice = new Person("alice", 20, 40);
+//        bob = new Person("bob", 100, 200);
+//        charlie = new Person("charlie", 0, 50);
         input = new Scanner(System.in);
         group = new PaymentGroup();
-        group.addPeople(alice);
-        group.addPeople(bob);
-        group.addPeople(charlie);
+//        group.addPeople(alice);
+//        group.addPeople(bob);
+//        group.addPeople(charlie);
+        jsonReader = new JsonReader(JSON_FILE);
+        jsonWriter = new JsonWriter(JSON_FILE);
+
     }
 
     //effect: shows the user options to choose from
@@ -61,6 +71,8 @@ public class PaymentApp {
         System.out.println("\tp -> Deduct amount you paid to someone");
         System.out.println("\to -> Deduct amount you received from someone");
         System.out.println("\td -> Delete someone");
+        System.out.println("\ts -> Save changes");
+        System.out.println("\tl -> Load file");
         System.out.println("\tq -> Quit");
     }
 
@@ -79,6 +91,10 @@ public class PaymentApp {
             receivePayment();
         } else if (userInput.equals("d")) {
             delete();
+        } else if (userInput.equals("s")) {
+            save();
+        } else if (userInput.equals("l")) {
+            load();
         } else {
             System.out.println("Invalid input");
         }
@@ -147,7 +163,7 @@ public class PaymentApp {
 
     //modifies: this
     //effect: allows user to pay to someone in the group
-    private void doPayment() {
+    private boolean doPayment() {
         System.out.println("Choose someone to pay:");
         for (Person p : group.getPaymentGroup()) {
             System.out.println(p.getName());
@@ -165,13 +181,16 @@ public class PaymentApp {
                 }
                 p.setAmountToGive(p.getAmountToGive() - amount);
                 System.out.println("You now owe " + name + " $" + p.getAmountToGive());
+                return true;
             }
         }
+        System.out.println("name not found");
+        return false;
     }
 
     //modifies: this
     //effect: allows user to receive payment from someone
-    private void receivePayment() {
+    private boolean receivePayment() {
         System.out.println("Choose someone to receive money from:");
         for (Person p : group.getPaymentGroup()) {
             System.out.println(p.getName());
@@ -189,8 +208,11 @@ public class PaymentApp {
                 }
                 p.setAmountToTake(p.getAmountToTake() - amount);
                 System.out.println(name + " now owes you " + " $" + p.getAmountToTake());
+                return true;
             }
         }
+        System.out.println("name not found");
+        return false;
 
     }
 
@@ -225,4 +247,37 @@ public class PaymentApp {
             System.out.println(p.getName());
         }
     }
+
+    // MODIFIES: this
+    // EFFECTS: saves payment group to file
+    private void save() {
+        try {
+            jsonWriter.openWriter();
+            jsonWriter.writeFile(group);
+            jsonWriter.closeWriter();
+            System.out.println("Saved to " + JSON_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_FILE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads payment group from file
+    private void load() {
+        try {
+            group = jsonReader.read();
+            System.out.println("Loaded from " + JSON_FILE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_FILE);
+        }
+    }
+
+//    private void print() {
+//        for (Person p : group.getPaymentGroup()) {
+//            System.out.println("name: " + p.getName());
+//            System.out.println("amount to give: " + p.getAmountToGive());
+//            System.out.println("amount to take: " + p.getAmountToTake());
+//            System.out.println();
+//        }
+
 }
