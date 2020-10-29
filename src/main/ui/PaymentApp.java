@@ -144,7 +144,7 @@ public class PaymentApp {
 
         Person person = new Person(name, amountToGive, amountToTake);
         group.addPeople(person);
-        printEveryoneInGroup();
+        printEveryone();
 
     }
 
@@ -237,11 +237,11 @@ public class PaymentApp {
             group.getPaymentGroup().remove(personToRemove);
         }
 
-        printEveryoneInGroup();
+        printEveryone();
     }
 
     //effect: prints people who are in the group
-    private void printEveryoneInGroup() {
+    private void printEveryone() {
         System.out.println("The people in your group are:");
         for (Person p : group.getPaymentGroup()) {
             System.out.println(p.getName());
