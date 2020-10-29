@@ -1,4 +1,6 @@
-package model;
+package persistance;
+import model.PaymentGroup;
+import model.Person;
 import persistance.JsonReader;
 import persistance.JsonWriter;
 import org.junit.jupiter.api.Test;

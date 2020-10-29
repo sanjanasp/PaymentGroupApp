@@ -31,8 +31,6 @@ public class PaymentGroupTest {
 
         assertEquals(3,group.sizeOfGroup());
 
-        group.addPeople(alice);
-        assertEquals(3,group.sizeOfGroup());
     }
 
     @Test

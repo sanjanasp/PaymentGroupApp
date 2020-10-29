@@ -37,6 +37,4 @@ public class PersonTest {
         assertEquals("Bob",bob.getName());
     }
 
-
-
 }
