@@ -3,20 +3,25 @@ package ui;
 import model.PaymentGroup;
 import model.Person;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.awt.event.ActionListener;
 import java.util.Vector;
-import javax.swing.text.JTextComponent;
 
-//Creates a GUI for PaymentGroup using JTable. User can add and delete people
+//Creates a GUI for PaymentGroup using JTable. User can add, delete, save and load people
 //from their group.
-public class PaymentGroupDemo extends JPanel {
+public class PaymentGroupDemo extends JFrame {
+    private final String filename = "text.out";
+
     private JTable table;
     private JFrame frame;
     private JTextField textName;
@@ -25,13 +30,12 @@ public class PaymentGroupDemo extends JPanel {
     private JButton addButton;
     private DefaultTableModel model;
     private JButton deleteButton;
-    final String filename = "text.out";
-    final JTextField textField = new JTextField();
     private Person p1;
     private Person p2;
     private PaymentGroup paymentGroup;
-    private JButton jbtSave;
-    private JButton jbtLoad;
+    private JButton saveButton;
+    private JButton loadButton;
+    private String soundName = "./data/mouseclick.wav";
 
     //effect: initializes the field
     public PaymentGroupDemo() {
@@ -45,26 +49,22 @@ public class PaymentGroupDemo extends JPanel {
         deleteButton = new JButton("Delete");
         p1 = new Person("Charlie", 20, 30);
         p2 = new Person("Hanna", 50, 100);
-        jbtSave = new JButton("Save Table");
-        jbtLoad = new JButton("Load Table");
+        saveButton = new JButton("Save Table");
+        loadButton = new JButton("Load Table");
 
-        setWindow();
+        setWindowFrame();
     }
 
-    //modifies: this
     //effect: sets up the window for GUI
-    public void setWindow() {
+    public void setWindowFrame() {
         textName.setBounds(20, 220, 100, 25);
-
         textAmountGive.setBounds(20, 250, 100, 25);
         textAmountTake.setBounds(20, 280, 100, 25);
-
         addButton.setBounds(150, 230, 100, 25);
         deleteButton.setBounds(150, 265, 100, 25);
 
         frame.setSize(880, 400);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
@@ -76,9 +76,29 @@ public class PaymentGroupDemo extends JPanel {
         frame.add(addButton);
         addButton.setEnabled(false);
         frame.add(deleteButton);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         makeTable();
     }
+
+//    public void playSound(String soundName) {
+//        try {
+//            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+//            Clip clip = AudioSystem.getClip();
+//            clip.open(audioInputStream);
+//            clip.start();
+//        } catch (Exception ex) {
+//            System.out.println("Error with playing sound.");
+//            ex.printStackTrace();
+//        }
+//        addButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                playSound(soundName);
+//            }
+//        });
+//        makeTable();
+//    }
+
 
     //modifies: this
     //effect: makes a table with person name and amounts.
@@ -86,29 +106,25 @@ public class PaymentGroupDemo extends JPanel {
         Object[] columns = {"Name", "Amount to give", "Amount to take"};
         model.setColumnIdentifiers(columns);
         table.setModel(model);
-        model.addRow(new Object[]{p1.getName(), p1.getAmountToGive(), p1.getAmountToTake()});
-        model.addRow(new Object[]{p2.getName(), p2.getAmountToGive(), p2.getAmountToTake()});
-
-
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(0, 0, 880, 200);
         frame.add(scrollPane);
 
         disableNameField();
 
-        jbtLoad.setBounds(400, 230, 100, 25);
-        jbtSave.setBounds(400, 260, 100, 25);
-        frame.add(jbtSave);
-        frame.add(jbtLoad);
+        loadButton.setBounds(400, 230, 100, 25);
+        saveButton.setBounds(400, 260, 100, 25);
+        frame.add(saveButton);
+        frame.add(loadButton);
 
 
-        jbtSave.addActionListener(new ActionListener() {
+        saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveTable();
             }
         });
 
-        jbtLoad.addActionListener(new ActionListener() {
+        loadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadTable();
             }
@@ -265,16 +281,14 @@ public class PaymentGroupDemo extends JPanel {
         }
     }
 
+
     //effect: runs  PaymentGroupDemo
     public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new PaymentGroupDemo();
             }
         });
     }
-
-
 }
+
