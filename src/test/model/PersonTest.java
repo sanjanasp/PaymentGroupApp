@@ -37,4 +37,12 @@ public class PersonTest {
         assertEquals("Bob",bob.getName());
     }
 
+    @Test
+    public void testEquality() {
+        Person alice = new Person("Alice", 10, 10);
+        assertNotEquals(bob, alice);
+        assertNotEquals(bob, null);
+        assertNotEquals(alice.hashCode(), bob.hashCode());
+    }
+
 }
