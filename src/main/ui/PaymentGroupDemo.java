@@ -2,17 +2,16 @@ package ui;
 
 import model.PaymentGroup;
 import model.Person;
+import persistance.JsonReader;
+import persistance.JsonWriter;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -20,8 +19,6 @@ import java.util.Vector;
 //Creates a GUI for PaymentGroup using JTable. User can add, delete, save and load people
 //from their group.
 public class PaymentGroupDemo extends JFrame {
-    private final String filename = "text.out";
-
     private JTable table;
     private JFrame frame;
     private JTextField textName;
@@ -30,15 +27,17 @@ public class PaymentGroupDemo extends JFrame {
     private JButton addButton;
     private DefaultTableModel model;
     private JButton deleteButton;
-    private Person p1;
-    private Person p2;
     private PaymentGroup paymentGroup;
     private JButton saveButton;
     private JButton loadButton;
-    private String soundName = "./data/mouseclick.wav";
+
+    // store
+    private static final String JSON_FILE = "./data/paymentgroup.json";
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     //effect: initializes the field
-    public PaymentGroupDemo() {
+    public PaymentGroupDemo() throws IOException {
         table = new JTable();
         frame = new JFrame("My Payment Group");
         textName = new JTextField();
@@ -47,23 +46,33 @@ public class PaymentGroupDemo extends JFrame {
         addButton = new JButton("Add");
         model = new DefaultTableModel();
         deleteButton = new JButton("Delete");
-        p1 = new Person("Charlie", 20, 30);
-        p2 = new Person("Hanna", 50, 100);
+
+        paymentGroup = new PaymentGroup();
+
         saveButton = new JButton("Save Table");
         loadButton = new JButton("Load Table");
 
+        jsonReader = new JsonReader(JSON_FILE);
+        jsonWriter = new JsonWriter(JSON_FILE);
+
         setWindowFrame();
+        makeTable();
     }
 
+
     //effect: sets up the window for GUI
-    public void setWindowFrame() {
+    public void setWindowFrame() throws IOException {
+
+        BufferedImage bf = ImageIO.read(new File("./data/backgroundPic.jpg"));
+        frame.setContentPane(new ImagePanel(bf));
+
         textName.setBounds(20, 220, 100, 25);
         textAmountGive.setBounds(20, 250, 100, 25);
         textAmountTake.setBounds(20, 280, 100, 25);
         addButton.setBounds(150, 230, 100, 25);
         deleteButton.setBounds(150, 265, 100, 25);
 
-        frame.setSize(880, 400);
+        frame.setSize(880, 600);
 
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
@@ -78,30 +87,48 @@ public class PaymentGroupDemo extends JFrame {
         frame.add(deleteButton);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        makeTable();
     }
 
-//    public void playSound(String soundName) {
-//        try {
-//            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
-//            Clip clip = AudioSystem.getClip();
-//            clip.open(audioInputStream);
-//            clip.start();
-//        } catch (Exception ex) {
-//            System.out.println("Error with playing sound.");
-//            ex.printStackTrace();
-//        }
-//        addButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                playSound(soundName);
-//            }
-//        });
-//        makeTable();
-//    }
+    //effect: saves the payment group table
+    private void save() {
+        try {
+            jsonWriter.openWriter();
+            jsonWriter.writeFile(paymentGroup);
+            jsonWriter.closeWriter();
+            System.out.println("Saved to " + JSON_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_FILE);
+        }
+    }
 
+    //effect: loads the payment group table
+    private void load() {
+        try {
+
+            for (int i = paymentGroup.getPaymentGroup().size() - 1; i >= 0; i--) {
+                model.removeRow(i);
+            }
+
+            paymentGroup = jsonReader.read();
+            System.out.println("Loaded from " + JSON_FILE);
+
+            for (Person p : paymentGroup.getPaymentGroup()) {
+                String[] row = new String[3];
+                row[0] = p.getName();
+                row[1] = Integer.toString(p.getAmountToGive());
+                row[2] = Integer.toString(p.getAmountToTake());
+                model.addRow(row);
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_FILE);
+        }
+    }
 
     //modifies: this
     //effect: makes a table with person name and amounts.
+    //performs action listener on save and load buttons.
     public void makeTable() {
         Object[] columns = {"Name", "Amount to give", "Amount to take"};
         model.setColumnIdentifiers(columns);
@@ -120,13 +147,14 @@ public class PaymentGroupDemo extends JFrame {
 
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                saveTable();
+                save();
+                paymentGroup.toJson();
             }
         });
 
         loadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                loadTable();
+                load();
             }
         });
     }
@@ -196,11 +224,13 @@ public class PaymentGroupDemo extends JFrame {
             public void changedUpdate(DocumentEvent e) {
             }
         });
-        buttonsForAddAndDelete();
+        buttonsForAdd();
     }
 
-    //effect: creates an ActionEvent for add and delete buttons.
-    public void buttonsForAddAndDelete() {
+    //modifies: this
+    //effect: creates an ActionEvent for add buttons.
+    // makes person from given inputs and adds to payment group
+    public void buttonsForAdd() {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -209,84 +239,49 @@ public class PaymentGroupDemo extends JFrame {
                 row[1] = textAmountGive.getText();
                 row[2] = textAmountTake.getText();
 
-//                int row1 = Integer.parseInt(row[1]);
-//                int row2 = Integer.parseInt(row[2]);
+                Person curPerson = new Person(row[0], Integer.parseInt(row[1]), Integer.parseInt(row[2]));
+                paymentGroup.addPeople(curPerson);
 
                 model.addRow(row);
                 textName.setText("");
                 textAmountGive.setText("");
                 textAmountTake.setText("");
-                // int n = model.getRowCount();
-//                for (int i = 0; i < n; i++) {
-//                    paymentGroup.addPeople(new Person(row[0], row1, row2));
-//                }
             }
         });
+        buttonForDelete();
+    }
+
+    //modifies: this
+    //effect: creates an ActionEvent for delete button and deletes person
+    //from payment group.
+    public void buttonForDelete() {
+
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int k = table.getSelectedRow();
                 if (k >= 0) {
+                    Person curPerson = new Person((String) table.getValueAt(k, 0),
+                            Integer.parseInt((String) table.getValueAt(k, 1)),
+                            Integer.parseInt((String) table.getValueAt(k, 2)));
+
                     model.removeRow(k);
+                    paymentGroup.removePerson(curPerson);
                 }
             }
         });
 
     }
 
-    private JFileChooser myJFileChooser = new JFileChooser(new File(filename));
-
-    private void saveTable() {
-        if (myJFileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            saveTable(myJFileChooser.getSelectedFile());
-        }
-    }
-
-    private void saveTable(File file) {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(
-                    new FileOutputStream(file));
-            out.writeObject(model.getDataVector());
-            out.writeObject(getColumnNames());
-            out.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private Vector<String> getColumnNames() {
-        Vector<String> columnNames = new Vector<String>();
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            columnNames.add(model.getColumnName(i));
-        }
-        return columnNames;
-    }
-
-    private void loadTable() {
-        if (myJFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            loadTable(myJFileChooser.getSelectedFile());
-        }
-    }
-
-    private void loadTable(File file) {
-        try {
-            ObjectInputStream in = new ObjectInputStream(
-                    new FileInputStream(file));
-            Vector rowData = (Vector) in.readObject();
-            Vector columnNames = (Vector) in.readObject();
-            model.setDataVector(rowData, columnNames);
-            in.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
     //effect: runs  PaymentGroupDemo
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new PaymentGroupDemo();
+                try {
+                    new PaymentGroupDemo();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

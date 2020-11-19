@@ -3,6 +3,8 @@ package model;
 import persistance.Writeable;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 // Person is someone who will be added to the payment group. Person has a name,
 // amount they owe to the user and amount they will receive from the user.
 // Amount is dollars in whole number.
@@ -53,5 +55,22 @@ public class Person implements Writeable {
         json.put("AmountToBeGiven", amountToGive);
         json.put("AmountToBeReceived", amountToTake);
         return json;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Person p = (Person) o;
+        return amountToGive == p.amountToGive && amountToTake == p.amountToTake && Objects.equals(name, p.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, amountToGive, amountToTake);
     }
 }
