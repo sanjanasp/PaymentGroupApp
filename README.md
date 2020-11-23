@@ -20,4 +20,10 @@ pay them back before my debts increase out of control.
 * As a user, I want to be able to save the existing list of people.
 * As a user, I want to be able to reload the list from the file.
 
+### **Phase 4: Task 2**
+* In PaymentGroup class, deductAmountThatIsTaken and deductAmountThatIsGiven methods are robust.
 
+### **Phase 4: Task 3**
+
+* There is duplication in some parts of the PaymentGroupDemo. If I had more time,
+I would extract methods, and call those methods inside the original method.

@@ -28,8 +28,9 @@ public class PersonTest {
     }
     @Test
     public void testSetAmountToGive(){
-        bob.setAmountToGive(30);
-        assertEquals(30, bob.getAmountToGive());
+       bob.setAmountToGive(30);
+       assertEquals(30, bob.getAmountToGive());
+
     }
 
     @Test

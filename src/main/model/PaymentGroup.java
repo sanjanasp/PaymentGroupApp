@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 // PaymentGroup is a group of people who owe money and/or who will get money from the user.
-// All amounts to be given are in dollars (whole number).
 public class PaymentGroup implements Writeable {
 
     private List<Person> paymentGroup;
@@ -42,25 +41,34 @@ public class PaymentGroup implements Writeable {
         return count;
     }
 
-    //require: p is in the group and amountGiven <= p.getAmountToGive()
     //modifies: this
     //effect: deducts amount that is paid by the user to p
-    public void deductAmountThatIsGiven(Person p, int amountGiven) {
+    // throws InvalidAmountException if the more is paid than is supposed to.
+    public void deductAmountThatIsGiven(Person p, int amountGiven) throws InvalidAmountException {
+        if ((p.getAmountToGive() - amountGiven) < 0) {
+            throw new InvalidAmountException();
+        }
         p.setAmountToGive(p.getAmountToGive() - amountGiven);
     }
 
-    //require: p is in the group and amountTaken <= p.getAmountToTake()
+
     //modifies: this
     //effect: deducts amount that is taken by the user from p
-    public void deductAmountThatIsTaken(Person p, int amountTaken) {
+    // throws InvalidAmountException if the more is received than is supposed to.
+    public void deductAmountThatIsTaken(Person p, int amountTaken) throws InvalidAmountException {
+        if ((p.getAmountToTake() - amountTaken) < 0) {
+            throw new InvalidAmountException();
+        }
         p.setAmountToTake(p.getAmountToTake() - amountTaken);
     }
 
-    //require: p is in the group
+
     //modifies: this
     //effect: removes p from the group
     public void removePerson(Person p) {
-        paymentGroup.remove(p);
+        if (getPaymentGroup().contains(p)) {
+            paymentGroup.remove(p);
+        }
     }
 
     //effect: returns size of the group

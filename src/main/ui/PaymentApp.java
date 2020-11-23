@@ -1,5 +1,6 @@
 package ui;
 
+import model.InvalidAmountException;
 import persistance.JsonReader;
 import persistance.JsonWriter;
 import model.PaymentGroup;
@@ -12,9 +13,6 @@ import java.util.Scanner;
 //runs payment group application
 public class PaymentApp {
     private static final String JSON_FILE = "./data/paymentgroup.json";
-    private Person alice;
-    private Person bob;
-    private Person charlie;
     private Scanner input;
     private PaymentGroup group;
     private JsonWriter jsonWriter;
@@ -48,15 +46,10 @@ public class PaymentApp {
 
     //modifies: this
     //effect: initializes the field
-    private void init()  {
-//        alice = new Person("alice", 20, 40);
-//        bob = new Person("bob", 100, 200);
-//        charlie = new Person("charlie", 0, 50);
+    private void init() {
         input = new Scanner(System.in);
         group = new PaymentGroup();
-//        group.addPeople(alice);
-//        group.addPeople(bob);
-//        group.addPeople(charlie);
+
         jsonReader = new JsonReader(JSON_FILE);
         jsonWriter = new JsonWriter(JSON_FILE);
 
@@ -172,21 +165,30 @@ public class PaymentApp {
         name = name.toLowerCase();
 
         for (Person p : group.getPaymentGroup()) {
+            if (!name.equals(p.getName().toLowerCase())) {
+                System.out.println("name not found");
+                return false;
+            }
             if (name.equals(p.getName().toLowerCase())) {
                 System.out.println("How much would you like to pay?");
                 int amount = input.nextInt();
-                if (amount > p.getAmountToGive()) {
-                    System.out.println("Amount given is greater than the amount to be returned. Please try again.");
-                    amount = input.nextInt();
-                }
-                p.setAmountToGive(p.getAmountToGive() - amount);
-                System.out.println("You now owe " + name + " $" + p.getAmountToGive());
-                return true;
+                catchGive(p, amount, name);
             }
         }
-        System.out.println("name not found");
-        return false;
+        return true;
     }
+
+    public boolean catchGive(Person p, int amount, String name) {
+        try {
+            group.deductAmountThatIsGiven(p, amount);
+            System.out.println("You now owe " + name + " $" + p.getAmountToGive());
+            return true;
+        } catch (InvalidAmountException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
 
     //modifies: this
     //effect: allows user to receive payment from someone
@@ -199,21 +201,28 @@ public class PaymentApp {
         name = name.toLowerCase();
 
         for (Person p : group.getPaymentGroup()) {
+            if (!name.equals(p.getName().toLowerCase())) {
+                System.out.println("name not found");
+                return false;
+            }
             if (name.equals(p.getName().toLowerCase())) {
                 System.out.println("How much are you receiving?");
                 int amount = input.nextInt();
-                if (amount > p.getAmountToTake()) {
-                    System.out.println("Amount inputted is greater than the amount to be taken. Please try again.");
-                    amount = input.nextInt();
-                }
-                p.setAmountToTake(p.getAmountToTake() - amount);
-                System.out.println(name + " now owes you " + " $" + p.getAmountToTake());
-                return true;
+                catchPay(p, amount, name);
             }
         }
-        System.out.println("name not found");
-        return false;
+        return true;
+    }
 
+    private boolean catchPay(Person p, int amount, String name) {
+        try {
+            group.deductAmountThatIsTaken(p, amount);
+            System.out.println(name + " now owes you " + " $" + p.getAmountToTake());
+            return true;
+        } catch (InvalidAmountException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     //modifies: this

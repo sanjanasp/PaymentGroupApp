@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 //Creates a GUI for PaymentGroup using JTable. User can add, delete, save and load people
 //from their group.
@@ -62,7 +61,6 @@ public class PaymentGroupDemo extends JFrame {
 
     //effect: sets up the window for GUI
     public void setWindowFrame() throws IOException {
-
         BufferedImage bf = ImageIO.read(new File("./data/backgroundPic.jpg"));
         frame.setContentPane(new ImagePanel(bf));
 
@@ -86,7 +84,6 @@ public class PaymentGroupDemo extends JFrame {
         addButton.setEnabled(false);
         frame.add(deleteButton);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
     //effect: saves the payment group table
@@ -104,11 +101,9 @@ public class PaymentGroupDemo extends JFrame {
     //effect: loads the payment group table
     private void load() {
         try {
-
             for (int i = paymentGroup.getPaymentGroup().size() - 1; i >= 0; i--) {
                 model.removeRow(i);
             }
-
             paymentGroup = jsonReader.read();
             System.out.println("Loaded from " + JSON_FILE);
 
@@ -119,8 +114,6 @@ public class PaymentGroupDemo extends JFrame {
                 row[2] = Integer.toString(p.getAmountToTake());
                 model.addRow(row);
             }
-
-
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_FILE);
         }
@@ -184,7 +177,6 @@ public class PaymentGroupDemo extends JFrame {
 
     //effect: disables textField for given amount when other entries are not inputted
     public void disableGiveAmountField() {
-
         textAmountGive.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

@@ -52,19 +52,46 @@ public class PaymentGroupTest {
     }
 
     @Test
-    public void testDeductAmountThatIsGiven(){
+    public void testDeductAmountThatIsGivenWithoutException() {
         group.addPeople(alice);
-        group.deductAmountThatIsGiven(alice, 10);
-
-        assertEquals(10, alice.getAmountToGive());
+        try {
+            group.deductAmountThatIsGiven(alice, 10);
+            assertEquals(10, alice.getAmountToGive());
+        } catch (InvalidAmountException e) {
+            fail("Exception should be thrown");
+        }
+    }
+    @Test
+    public void testDeductAmountThatIsGivenWithException(){
+        group.addPeople(alice);
+        try {
+            group.deductAmountThatIsGiven(alice, 100);
+            assertEquals(20, alice.getAmountToGive());
+        } catch (InvalidAmountException e){
+            System.out.println("exception caught");
+        }
     }
 
     @Test
-    public void testDeductAmountThatIsTaken(){
+    public void testDeductAmountThatIsTakenWithoutException() {
         group.addPeople(charlie);
-        group.deductAmountThatIsTaken(charlie,20);
+        try {
+            group.deductAmountThatIsTaken(charlie, 20);
+            assertEquals(30, charlie.getAmountToTake());
+        } catch (InvalidAmountException e) {
+            fail("exception should be thrown");
+        }
+    }
 
-        assertEquals(30, charlie.getAmountToTake());
+    @Test
+    public void testDeductAmountThatIsTakenWithException(){
+        group.addPeople(charlie);
+        try {
+            group.deductAmountThatIsTaken(charlie,250);
+            assertEquals(50,charlie.getAmountToTake());
+        } catch (InvalidAmountException e) {
+            System.out.println("exception caught");
+        }
     }
 
     @Test
