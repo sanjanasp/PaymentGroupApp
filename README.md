@@ -25,5 +25,5 @@ pay them back before my debts increase out of control.
 
 ### **Phase 4: Task 3**
 
-* There is duplication in some parts of the PaymentGroupDemo. If I had more time,
-I would extract methods, and call those methods inside the original method.
+* If I had more time, I would make the PaymentApp and PaymentGroupDemo
+ classes in the UI package more cohesive.
