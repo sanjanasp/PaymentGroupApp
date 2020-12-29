@@ -1,29 +1,17 @@
-# **Payment Group**
+# **Payment Group App**
+This software application is designed to help users record, update and keep track of shared expenses.
 
-### **Introduction**
-This application helps the user to keep track of the amount people owe to him/her and, the amount
-he/she owes to people in that group. It allows the user to perform
-a bunch of functions, for example, add new people in the group, deduct some amount paid or 
-received, remove someone and so on. This application is useful for everyone who
-split bills and want to keep an account of how much they owe to people and will receive from them
+### **How To Use**
+Run Main in the UI package for the console-based user interaction. As a user, you will be able to do the following,
+* Add a person to your Payment Group
+* View the total amount you owe to and will receive from everyone in your group
+* Deduct some amount someone pays to you or, you pay to someone
+* Remove a person from your group
+* Save and reload data
 
-This project is of interest to me because I frequently split various kinds of bills with my friends.
-Having such an application will help me keep track of the amount I owe to different people and 
-pay them back before my debts increase out of control. 
-
-### **User Stories**
-* As a user, I want to be able to add a person to my Payment Group.
-* As a user, I want to be able to view the total amount I owe to and will receive from everyone in the group.
-* As a user, I want to be able to deduct some amount someone pays to me or, I pay to someone.
-* As a user, I want to be able to remove a person from the group.
-
-* As a user, I want to be able to save the existing list of people.
-* As a user, I want to be able to reload the list from the file.
-
-### **Phase 4: Task 2**
-* In PaymentGroup class, deductAmountThatIsTaken and deductAmountThatIsGiven methods are robust.
-
-### **Phase 4: Task 3**
-
-* If I had more time, I would make the PaymentApp and PaymentGroupDemo
- classes in the UI package more cohesive.
+Run the PaymentGroupDemo for graphical user interface. 
+* In the first text box enter the name of the person you want to add to your payment group
+* In the second text box enter the amount you owe to that person
+* In the third text box enter the amount you will receive from that person
+* You can then add the person to the table representing your payment group
+* You can also save and reload data
